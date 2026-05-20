@@ -1,12 +1,18 @@
 {
   "private": true,
+  "packageManager": "pnpm@10.28.0",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "prettier": "prettier --write --ignore-unknown .",
     "prettier:check": "prettier --check --ignore-unknown .",
-    "test": "pnpm prettier:check"
+    "smoke:url": "node scripts/smoke-url.mjs",
+    "smoke:local": "node scripts/smoke-local.mjs",
+    "verify": "pnpm build && pnpm smoke:local",
+    "verify:ci": "pnpm build && pnpm smoke:local",
+    "verify:deployment": "node scripts/verify-vercel-status.mjs",
+    "test": "pnpm verify"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
