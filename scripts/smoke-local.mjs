@@ -9,7 +9,7 @@ const intervalMs = Number(process.env.SMOKE_INTERVAL_MS || 2000);
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const server = spawn('pnpm', ['start', '--', '-p', port], {
+const server = spawn('npm', ['run', 'start', '--', '-p', port], {
   stdio: ['ignore', 'pipe', 'pipe'],
   env: process.env
 });
