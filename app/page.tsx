@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState, Suspense } from 'react';
+import React, { useEffect, useMemo, useState, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Environment, Stars } from '@react-three/drei';
 import * as THREE from 'three';
@@ -115,115 +115,93 @@ export default function DrinkingBirdApp() {
     return () => clearInterval(interval);
   }, [isRunning, speed]);
 
-  // Sound simulation (keep existing logic)
-  useEffect(() => {
-    if (isRunning && phase === 'drinking' && soundEnabled) {
-      // Could add Audio here if wanted
-      console.log('🐦 GULP!');
-    }
-  }, [phase, isRunning, soundEnabled]);
-
   const tilt = phase === 'drinking' ? 40 : phase === 'resetting' ? 8 : phase === 'cooling' ? -4 : 0;
 
   return (
     <main className="min-h-screen overflow-hidden bg-gradient-to-b from-blue-950 via-slate-950 to-black text-white">
       <div className="mx-auto max-w-6xl px-6 py-12">
         <div className="flex flex-col items-center text-center mb-12">
-          <h1 className="text-6xl font-black tracking-tighter mb-4">THE DRINKING COG</h1>
-          <p className="text-xl text-cyan-300">WebGL 3D Edition • Real-time Physics Toy</p>
+          <h1 className="text-6xl font-black tracking-tighter mb-4">THE DRINKING COG 3D</h1>
+          <p className="text-xl text-cyan-300">WebGL • React Three Fiber • Push it real good</p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-start">
-          {/* 3D / 2D Viewer */}
+          {/* 3D Viewer */}
           <div className="relative h-[520px] rounded-3xl border border-cyan-400/30 bg-black/60 overflow-hidden shadow-2xl">
-            {viewMode === '3d' ? (
-              <Canvas camera={{ position: [0, 2, 6], fov: 45 }} style={{ background: 'transparent' }}>
-                <Suspense fallback={null}>
-                  <ambientLight intensity={0.6} />
-                  <pointLight position={[10, 10, 10]} intensity={1.5} />
-                  <DrinkingBird3D phase={phase} speed={speed} isRunning={isRunning} />
-                  <Environment preset="night" />
-                  <OrbitControls enablePan={false} enableZoom={true} minDistance={3} maxDistance={12} />
-                  <Stars radius={100} depth={50} count={200} factor={4} saturation={0} fade speed={1} />
-                </Suspense>
-              </Canvas>
-            ) : (
-              // Keep original SVG 2D as fallback
-              <div className="flex h-full items-center justify-center bg-gradient-to-b from-cyan-950 to-slate-950">
-                {/* Original SVG here - abbreviated for brevity */}
-                <div className="text-6xl">🐦 (2D SVG Drinking Bird)</div>
-              </div>
-            )}
+            <Canvas camera={{ position: [0, 2, 6], fov: 45 }} style={{ background: 'transparent' }}>
+              <Suspense fallback={<div className="absolute inset-0 flex items-center justify-center text-cyan-400">Loading 3D Bird...</div>}>
+                <ambientLight intensity={0.6} />
+                <pointLight position={[10, 10, 10]} intensity={1.5} />
+                <DrinkingBird3D phase={phase} speed={speed} isRunning={isRunning} />
+                <Environment preset="night" />
+                <OrbitControls enablePan={false} enableZoom={true} minDistance={3} maxDistance={12} />
+                <Stars radius={100} depth={50} count={200} factor={4} saturation={0} fade speed={1} />
+              </Suspense>
+            </Canvas>
 
-            <div className="absolute bottom-6 left-6 flex gap-3">
-              <button onClick={() => setViewMode(viewMode === '3d' ? '2d' : '3d')}
-                className="px-5 py-2 bg-white/10 hover:bg-white/20 rounded-full text-sm backdrop-blur">
-                {viewMode === '3d' ? '2D View' : '3D View'}
+            <div className="absolute bottom-6 left-6 flex gap-3 z-10">
+              <button 
+                onClick={() => setViewMode(viewMode === '3d' ? '2d' : '3d')}
+                className="px-5 py-2 bg-white/10 hover:bg-white/20 rounded-full text-sm backdrop-blur border border-white/30"
+              >
+                {viewMode === '3d' ? 'Switch to 2D' : 'Switch to 3D'}
               </button>
             </div>
           </div>
 
-          {/* Controls */}
-          <div className="space-y-8">
-            <div className="space-y-6">
-              <div className="grid grid-cols-3 gap-4">
-                <div className="rounded-2xl border border-cyan-400/30 bg-white/5 p-6 text-center">
-                  <div className="text-xs uppercase tracking-widest text-cyan-400">CYCLES</div>
-                  <div className="text-5xl font-bold text-white mt-2">{cycleCount}</div>
-                </div>
-                <div className="rounded-2xl border border-cyan-400/30 bg-white/5 p-6 text-center">
-                  <div className="text-xs uppercase tracking-widest text-cyan-400">SPEED</div>
-                  <div className="text-5xl font-bold text-white mt-2">{speed.toFixed(1)}×</div>
-                </div>
-                <div className="rounded-2xl border border-cyan-400/30 bg-white/5 p-6 text-center">
-                  <div className="text-xs uppercase tracking-widest text-cyan-400">TILT</div>
-                  <div className="text-5xl font-bold text-white mt-2">{tilt}°</div>
-                </div>
+          {/* Controls Panel */}
+          <div className="space-y-8 pt-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="rounded-2xl border border-cyan-400/30 bg-white/5 p-6 text-center">
+                <div className="text-xs uppercase tracking-widest text-cyan-400">CYCLES</div>
+                <div className="text-5xl font-bold text-white mt-2">{cycleCount}</div>
               </div>
+              <div className="rounded-2xl border border-cyan-400/30 bg-white/5 p-6 text-center">
+                <div className="text-xs uppercase tracking-widest text-cyan-400">SPEED</div>
+                <div className="text-5xl font-bold text-white mt-2">{speed.toFixed(1)}×</div>
+              </div>
+              <div className="rounded-2xl border border-cyan-400/30 bg-white/5 p-6 text-center">
+                <div className="text-xs uppercase tracking-widest text-cyan-400">TILT</div>
+                <div className="text-5xl font-bold text-white mt-2">{tilt}°</div>
+              </div>
+            </div>
 
-              <div className="rounded-3xl bg-slate-900/80 p-8">
-                <p className="uppercase tracking-widest text-cyan-400 text-sm mb-3">PHASE</p>
-                <p className="text-3xl font-bold capitalize">{phase}</p>
-                <p className="text-slate-400 mt-4 leading-relaxed">{phaseCopy[phase]}</p>
-              </div>
+            <div className="rounded-3xl bg-slate-900/80 p-8">
+              <p className="uppercase tracking-widest text-cyan-400 text-sm mb-3">CURRENT PHASE</p>
+              <p className="text-3xl font-bold capitalize mb-2">{phase}</p>
+              <p className="text-slate-400 leading-relaxed">{phaseCopy[phase]}</p>
             </div>
 
             <div className="flex flex-col gap-4">
               <button
                 onClick={() => setIsRunning(!isRunning)}
-                className="w-full py-5 text-xl font-black rounded-2xl bg-cyan-400 text-slate-950 hover:bg-white transition-all active:scale-[0.985]"
+                className="w-full py-6 text-xl font-black rounded-2xl bg-gradient-to-r from-cyan-400 to-sky-400 text-slate-950 hover:brightness-110 transition-all active:scale-[0.985] shadow-lg shadow-cyan-500/30"
               >
-                {isRunning ? 'PAUSE SIMULATION' : 'START DRINKING 🐦'}
+                {isRunning ? '⏸️ PAUSE THE BIRD' : '▶️ START DRINKING 🐦🥃'}
               </button>
 
               <button
-                onClick={() => { setIsRunning(false); setCycleCount(0); }}
-                className="w-full py-4 border border-white/30 hover:border-cyan-400 rounded-2xl text-sm uppercase tracking-widest"
+                onClick={() => { setIsRunning(false); setCycleCount(0); setSpeed(1); }}
+                className="w-full py-4 border border-white/30 hover:border-red-400 text-red-400 hover:text-red-300 rounded-2xl text-sm uppercase tracking-widest transition"
               >
-                RESET
+                RESET ALL
               </button>
             </div>
 
             <div>
-              <label className="block text-sm uppercase tracking-widest text-slate-400 mb-3">SIMULATION SPEED</label>
+              <label className="block text-sm uppercase tracking-widest text-slate-400 mb-4">SPEED CONTROL</label>
               <input
                 type="range"
                 min="0.5" max="3" step="0.1"
                 value={speed}
                 onChange={(e) => setSpeed(Number(e.target.value))}
-                className="w-full accent-cyan-400"
+                className="w-full accent-cyan-400 cursor-pointer"
               />
-              <div className="flex justify-between text-xs text-slate-500 mt-1">
-                <span>SLOW</span><span>FAST</span>
-              </div>
             </div>
 
-            <button
-              onClick={() => setSoundEnabled(!soundEnabled)}
-              className="w-full py-3 border border-white/20 hover:bg-white/5 rounded-2xl flex items-center justify-center gap-3"
-            >
-              🔊 SOUND {soundEnabled ? 'ENABLED' : 'MUTED'}
-            </button>
+            <div className="text-center text-sm text-slate-500">
+              Drag to orbit • Scroll to zoom • The bird visibly drinks in 3D!
+            </div>
           </div>
         </div>
       </div>
