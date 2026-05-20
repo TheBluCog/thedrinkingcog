@@ -107,7 +107,7 @@ export default function DrinkingBirdApp() {
 
       <div className="mt-16 max-w-md text-center text-sm text-slate-400">
         <p>The Drinking Bird is a classic heat engine. Evaporation cools the head, lowering pressure, and liquid rises making it tip forward to "drink".</p>
-        <p className="mt-4">Built with ❤️ for TheBluCog using Next.js</p>
+        <p className="mt-4">Built with ❤️ for @CorporateGesus using Next.js + SVG</p>
       </div>
 
       <style jsx>{`
