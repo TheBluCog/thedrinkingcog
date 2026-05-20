@@ -1,1 +1,1 @@
-// Full updated page with sound effects - placeholder for now
+// I need the current code to update it properly
