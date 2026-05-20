@@ -7,7 +7,7 @@ type BirdPhase = 'idle' | 'cooling' | 'drinking' | 'resetting';
 const phaseCopy: Record<BirdPhase, string> = {
   idle: 'Idle and balanced. Ready to sip.',
   cooling: 'Evaporative cooling is pulling vapor upward.',
-  drinking: 'Center of mass shifts. The bird tips and drinks.',
+  drinking: 'Beak down. Water contact. Tiny bird is absolutely sending it.',
   resetting: 'Pressure equalizes. The cog resets for another cycle.'
 };
 
@@ -23,7 +23,7 @@ export default function DrinkingBirdApp() {
 
     const interval = setInterval(() => {
       setCycleCount((previous) => previous + 1);
-    }, Math.max(700, 3600 / speed));
+    }, Math.max(650, 2400 / speed));
 
     return () => clearInterval(interval);
   }, [isRunning, speed]);
@@ -34,14 +34,15 @@ export default function DrinkingBirdApp() {
     }
 
     const step = cycleCount % 4;
-    if (step === 0) return 'cooling';
     if (step === 1) return 'drinking';
     if (step === 2) return 'resetting';
-    return 'cooling';
+    if (step === 3) return 'cooling';
+    return 'drinking';
   }, [cycleCount, isRunning]);
 
-  const tilt = phase === 'drinking' ? 24 : phase === 'resetting' ? -7 : 0;
-  const bob = isRunning ? Math.sin(cycleCount) * 4 : 0;
+  const tilt = phase === 'drinking' ? 40 : phase === 'resetting' ? 8 : phase === 'cooling' ? -4 : 0;
+  const bob = phase === 'drinking' ? 8 : isRunning ? Math.sin(cycleCount) * 3 : 0;
+  const isDrinking = phase === 'drinking';
 
   return (
     <main className="min-h-screen overflow-hidden bg-gradient-to-b from-blue-950 via-slate-950 to-black text-white">
@@ -87,7 +88,14 @@ export default function DrinkingBirdApp() {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <button
               type="button"
-              onClick={() => setIsRunning((value) => !value)}
+              onClick={() => {
+                setIsRunning((value) => {
+                  if (!value) {
+                    setCycleCount(1);
+                  }
+                  return !value;
+                });
+              }}
               className="rounded-full bg-cyan-300 px-7 py-3 text-sm font-black uppercase tracking-widest text-slate-950 shadow-lg shadow-cyan-500/30 transition hover:bg-white"
             >
               {isRunning ? 'Pause simulation' : 'Start simulation'}
@@ -143,14 +151,29 @@ export default function DrinkingBirdApp() {
 
             <rect x="64" y="362" width="192" height="32" rx="16" fill="#0f172a" stroke="#67e8f9" strokeOpacity="0.4" />
             <line x1="160" y1="350" x2="160" y2="394" stroke="#67e8f9" strokeWidth="8" strokeLinecap="round" />
-            <circle cx="160" cy="214" r="10" fill="#e2e8f0" />
+            <circle cx="160" cy="350" r="10" fill="#e2e8f0" />
             <line x1="106" y1="214" x2="214" y2="214" stroke="#94a3b8" strokeWidth="6" strokeLinecap="round" />
+
+            <g opacity="0.95">
+              <rect x="248" y="122" width="58" height="84" rx="16" fill="#0f172a" stroke="#67e8f9" strokeOpacity="0.55" />
+              <path d="M258 168 Q277 182 296 168" fill="none" stroke="#67e8f9" strokeWidth="6" strokeLinecap="round" />
+              <circle cx="277" cy="152" r={isDrinking ? 11 : 7} fill="#67e8f9" opacity={isDrinking ? 1 : 0.4} />
+              <ellipse cx="277" cy="168" rx={isDrinking ? 30 : 18} ry={isDrinking ? 9 : 5} fill="none" stroke="#67e8f9" strokeWidth="3" opacity={isDrinking ? 0.9 : 0.25} />
+              {isDrinking && (
+                <>
+                  <circle cx="266" cy="149" r="3" fill="#a5f3fc" />
+                  <circle cx="288" cy="145" r="2" fill="#a5f3fc" />
+                  <circle cx="292" cy="162" r="2" fill="#a5f3fc" />
+                </>
+              )}
+            </g>
 
             <g
               style={{
-                transformOrigin: '160px 214px',
+                transformBox: 'fill-box',
+                transformOrigin: '160px 350px',
                 transform: `rotate(${tilt}deg) translateY(${bob}px)`,
-                transition: 'transform 600ms cubic-bezier(.2,.8,.2,1)'
+                transition: 'transform 700ms cubic-bezier(.2,.8,.2,1)'
               }}
             >
               <line x1="160" y1="142" x2="160" y2="316" stroke="#e2e8f0" strokeWidth="10" strokeLinecap="round" />
@@ -162,10 +185,6 @@ export default function DrinkingBirdApp() {
               <path d="M137 72 Q160 52 183 72" fill="none" stroke="#ef4444" strokeWidth="18" strokeLinecap="round" />
               <path d="M130 91 Q160 78 190 91" fill="none" stroke="#f97316" strokeWidth="8" strokeLinecap="round" />
             </g>
-
-            <rect x="214" y="272" width="68" height="84" rx="16" fill="#0f172a" stroke="#67e8f9" strokeOpacity="0.5" />
-            <path d="M224 324 Q248 340 272 324" fill="none" stroke="#67e8f9" strokeWidth="5" strokeLinecap="round" />
-            <circle cx="248" cy="310" r="7" fill="#67e8f9" opacity={phase === 'drinking' ? 1 : 0.35} />
           </svg>
         </div>
       </section>
