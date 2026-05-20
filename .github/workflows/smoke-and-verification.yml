@@ -1,0 +1,77 @@
+name: Smoke and Verification
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: smoke-and-verification-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-local-smoke:
+    name: Build and local smoke
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.28.0 --activate
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build and smoke local app
+        run: pnpm verify:ci
+
+  vercel-deployment-verification:
+    name: Vercel deployment verification
+    runs-on: ubuntu-latest
+    needs: build-and-local-smoke
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      statuses: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Wait for Vercel deployment status
+        run: node scripts/verify-vercel-status.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+          VERCEL_STATUS_CONTEXT: Vercel
+          VERCEL_STATUS_RETRIES: 40
+          VERCEL_STATUS_INTERVAL_MS: 15000
+
+      - name: Smoke deployed branch alias
+        run: node scripts/smoke-url.mjs
+        env:
+          SMOKE_URL: https://thedrinkingcog-git-main-theblucogs-projects.vercel.app
+          SMOKE_REQUIRED_TEXT: The Drinking Cog
+          SMOKE_REQUIRED_MARKER: home-ready
+          SMOKE_RETRIES: 20
+          SMOKE_INTERVAL_MS: 3000
