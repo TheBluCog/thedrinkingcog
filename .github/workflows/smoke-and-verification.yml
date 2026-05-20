@@ -22,22 +22,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Enable pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@10.28.0 --activate
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: pnpm
+          cache: npm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm install
 
       - name: Build and smoke local app
-        run: pnpm verify:ci
+        run: npm run verify:ci
 
   vercel-deployment-verification:
     name: Vercel deployment verification
@@ -56,6 +51,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
 
       - name: Wait for Vercel deployment status
         run: node scripts/verify-vercel-status.mjs
