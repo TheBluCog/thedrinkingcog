@@ -1,0 +1,72 @@
+{
+  "name": "ANTEVYR.ADDONS.META 1.2.0 — AVA-001 Licensed Operator",
+  "description": "Wallet-compatible Polygon reissue for ANTEVYR license AMETA-AVA001-120-001. Licensed operator: AVA-001. Uses the original ANTEVYR.ADDONS.META Polygon artwork (gold keystone / META AI Add-on). This token replaces token #3 for wallet display/interoperability only and does not create a second seat, expand rights, confer wallet autonomy, or activate broker/runtime authority.",
+  "image": "https://cdn.websitepublisher.ai/custom/wid23814/nft/antevyr-addons-meta/artwork-6e2044d43db1ad85f81841c19f94cde266dac91ab13a7220690bcc77a8c16c6f.jpg",
+  "external_url": "https://antevyrai.com",
+  "attributes": [
+    {
+      "trait_type": "Brand",
+      "value": "ANTEVYR"
+    },
+    {
+      "trait_type": "Product",
+      "value": "AVA.ADDONS.META"
+    },
+    {
+      "trait_type": "Version",
+      "value": "1.2.0"
+    },
+    {
+      "trait_type": "Licensed Operator",
+      "value": "AVA-001"
+    },
+    {
+      "trait_type": "License ID",
+      "value": "AMETA-AVA001-120-001"
+    },
+    {
+      "trait_type": "Representation",
+      "value": "Wallet Compatibility Reissue"
+    },
+    {
+      "trait_type": "Replaces Token ID",
+      "value": "3"
+    },
+    {
+      "trait_type": "Metadata Transport",
+      "value": "HTTPS_JSON"
+    },
+    {
+      "trait_type": "Network",
+      "value": "Polygon PoS"
+    },
+    {
+      "trait_type": "Artwork",
+      "value": "META AI Add-on — gold keystone"
+    },
+    {
+      "trait_type": "Seat Count",
+      "value": "1"
+    }
+  ],
+  "properties": {
+    "license_id": "AMETA-AVA001-120-001",
+    "issuance_id": "AMETA-AVA001-120-001-R1",
+    "licensed_operator": "AVA-001",
+    "licensed_operator_type": "AI_AGENT",
+    "product": "AVA.ADDONS.META",
+    "version": "1.2.0",
+    "replacement_of_token_id": "3",
+    "replacement_reason": "METAMASK_MOBILE_INLINE_DATA_URI_COMPATIBILITY",
+    "seat_count": 1,
+    "seat_count_delta": 0,
+    "metadata_transport": "HTTPS_JSON",
+    "image_transport": "HTTPS",
+    "image_sha256": "6e2044d43db1ad85f81841c19f94cde266dac91ab13a7220690bcc77a8c16c6f",
+    "media_type": "image/jpeg",
+    "original_polygon_meta_artwork": true,
+    "nft_transfer_effect": "NFT transfer does not transfer the corporate seat, license rights or operator authority.",
+    "runtime_authority_activated": false,
+    "live_broker_entitlement": "NOT_VERIFIED"
+  }
+}
